@@ -126,4 +126,10 @@
       </properties>
     </profile>
   </profiles>
+  <scm>
+    <url>https://ludovicianul@github.com/ludovicianul/hq.git</url>
+    <connection>scm:git:https://ludovicianul@github.com/ludovicianul/hq.git</connection>
+    <developerConnection>scm:git:https://ludovicianul@github.com/ludovicianul/hq.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
 </project>
