@@ -25,3 +25,13 @@ Usage: hq [-htV] [-a=<attribute>] [-f=<FILE>] [-o=<FILE>] <selector>
 You can rename the downloaded version to `hq` (the `jar` version also) and execute it using `./hq` (or add it the `PATH` variable so that you can ditch the `./`).
 
 The uberjar can be run using `java -jar hq`. Requires Java 11+.
+
+# Examples
+```
+➜ curl -s https://www.w3schools.com/cssref/css_selectors.asp | ./hq "#mainLeaderboard"
+
+<div id="mainLeaderboard" style="overflow:hidden;"> <!-- MainLeaderboard--> <!--<pre>main_leaderboard, all: [728,90][970,90][320,50][468,60]</pre>-->
+ <div id="adngin-main_leaderboard-0"></div> <!-- adspace leaderboard -->
+</div>
+
+```
