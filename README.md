@@ -20,4 +20,4 @@ Usage: hq [-htV] [-a=<attribute>] [-f=<FILE>] [-o=<FILE>] <selector>
 ```
 
 # Installation
-`hq` is compiled to native code using GraalVM. Check the release page for binaries (Linux, MacOS) or uberjar.
+`hq` is compiled to native code using GraalVM. Check the [release page](https://github.com/ludovicianul/hq/releases/tag/hq-1.0.0) for binaries (Linux, MacOS) or uberjar.
