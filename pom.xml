@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.ludovicianul</groupId>
   <artifactId>hq</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -127,6 +127,6 @@
     <url>https://ludovicianul@github.com/ludovicianul/hq.git</url>
     <connection>scm:git:https://ludovicianul@github.com/ludovicianul/hq.git</connection>
     <developerConnection>scm:git:https://ludovicianul@github.com/ludovicianul/hq.git</developerConnection>
-    <tag>hq-1.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 </project>
