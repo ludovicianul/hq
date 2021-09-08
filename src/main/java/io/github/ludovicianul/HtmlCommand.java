@@ -18,6 +18,7 @@ import org.jsoup.select.Elements;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
+import us.codecraft.xsoup.Xsoup;
 
 @QuarkusMain
 @Command(
@@ -56,9 +57,20 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
   String output;
 
   @CommandLine.Option(
+      names = {"-x", "--xpath"},
+      paramLabel = "<XPATH>",
+      description = "Supply an XPath selector instead of CSS")
+  String xpath;
+
+  @CommandLine.Option(
       names = {"-t", "--text"},
       description = "Display only the inner text of the selected HTML top element")
   boolean text;
+
+  @CommandLine.Option(
+      names = {"-p", "--pretty"},
+      description = "Force pretty printing the output")
+  boolean prettyPrint;
 
   @Override
   public void run() {
@@ -77,7 +89,30 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
 
   private void processHtml(String html) throws IOException {
     Document document = Jsoup.parse(html);
-    Elements elements = document.select(selector);
+    this.setPrettyPrint(document);
+    Elements elements = this.evaluateSelector(document);
+    this.printResult(elements);
+  }
+
+  private void setPrettyPrint(Document document) {
+    if (prettyPrint) {
+      document.outputSettings().indentAmount(4).outline(true);
+    } else {
+      document.outputSettings().prettyPrint(false);
+    }
+  }
+
+  private Elements evaluateSelector(Document document) {
+    Elements elements;
+    if (xpath != null) {
+      elements = Xsoup.compile(xpath).evaluate(document).getElements();
+    } else {
+      elements = document.select(selector);
+    }
+    return elements;
+  }
+
+  private void printResult(Elements elements) throws IOException {
     if (attribute != null) {
       List<String> elementsWithAttribute = elements.eachAttr(attribute);
       this.writeToOutput(
