@@ -6,15 +6,23 @@ uses [CSS selectors](https://www.w3schools.com/cssref/css_selectors.asp) to extr
 # Usage
 
 ```bash
-Usage: hq [-htV] [-a=<attribute>] [-f=<FILE>] [-o=<FILE>] <selector>
-      <selector>        The CSS selector
+hq - command line HTML elements finder; version 1.0.0
+
+Usage: hq [-hptV] [-a=<attribute>] [-f=<FILE>] [-o=<FILE>] [-s=<POLICY>] [-x=<XPATH>] <selector>
+          [COMMAND]
+      <selector>            The CSS selector
   -a, --attribute=<attribute>
-                        Return only this attribute from the selected HTML elements
-  -f, --file=<FILE>     The HTML input file. If not supplied it will default to stdin
-  -h, --help            Show this help message and exit.
-  -o, --output=<FILE>   The output file. If not supplied it will default to stdout
-  -t, --text            Display only the inner text of the selected HTML top element
-  -V, --version         Print version information and exit.
+                            Return only this attribute from the selected HTML elements
+  -f, --file=<FILE>         The HTML input file. If not supplied it will default to stdin
+  -h, --help                Show this help message and exit.
+  -o, --output=<FILE>       The output file. If not supplied it will default to stdout
+  -p, --pretty              Force pretty printing the output
+  -s, --sanitize=<POLICY>   Sanitizes the html input according to the given policy
+  -t, --text                Display only the inner text of the selected HTML top element
+  -V, --version             Print version information and exit.
+  -x, --xpath=<XPATH>       Supply an XPath selector instead of CSS
+Commands:
+  generate-completion  Generate bash/zsh completion script for hq.
 
 ```
 
@@ -31,6 +39,19 @@ sudo cp hq-macos /usr/local/bin/hq
 ```
 
 The uberjar can be run using `java -jar hq`. Requires Java 11+.
+
+# Autocomplete
+Run the following commands to get autocomplete:
+
+```bash
+hq generate-completion >> hq_autocomplete
+
+source hq_autocomplete
+```
+
+# HTML Sanitizing
+`hq` can sanitize html output. Supported modes are: `NONE, BASIC, SIMPLE_TEXT, BASIC_WITH_IMAGES, RELAXED`. 
+More details about what they do: [here](https://jsoup.org/apidocs/org/jsoup/safety/Safelist.html).
 
 # Examples
 
@@ -57,4 +78,25 @@ configurable in CATS, but not the focus of this article). I usually recommend th
 A typical regex for this would be [\p{C}\p{Z}\p{So}]+ (although you should enhance it to allow spaces between words), which means: p{C} - match Unicode invisible Control 
 Chars (\u000D - carriage return for example) ...
 ...
+```
+
+Sanitize the html according to the [specified policy](https://jsoup.org/apidocs/org/jsoup/safety/Safelist.html):
+```
+curl -s https://ludovicianul.github.io/2021/07/16/unicode_language_version/ | ./hq html -s=BASIC -p
+
+<html>
+    <head></head>
+    <body>
+        <a href="https://ludovicianul.github.io/" rel="nofollow"> m's blog </a>
+        <p>practical thoughts about software engineering</p>
+        <a href="https://ludovicianul.github.io/" rel="nofollow">Home</a>
+        <a rel="nofollow">About</a>
+        <a href="https://github.com/ludovicianul" rel="nofollow">GitHub</a>
+        <p>© 2021. All rights reserved.</p>
+        Make sure you know which Unicode version is supported by your programming language version
+        <span>16 Jul 2021</span>
+        <p>
+...
+    </body>
+</html>
 ```
