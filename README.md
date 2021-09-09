@@ -1,7 +1,7 @@
 # hq
 
 Small utility to parse and grep HTML files. It
-uses [CSS selectors](https://www.w3schools.com/cssref/css_selectors.asp) to extract HTML elements.
+uses [CSS selectors](https://www.w3schools.com/cssref/css_selectors.asp) or [XPath Selectors](https://www.w3schools.com/xml/xpath_intro.asp) to extract HTML elements.
 
 # Usage
 
