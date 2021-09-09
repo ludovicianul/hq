@@ -14,7 +14,9 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.safety.Cleaner;
 import org.jsoup.select.Elements;
+import picocli.AutoComplete;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
@@ -26,7 +28,8 @@ import us.codecraft.xsoup.Xsoup;
     mixinStandardHelpOptions = true,
     version = "hq 1.0.0",
     usageHelpWidth = 100,
-    header = "hq - command line HTML elements finder; version 1.0.0\n")
+    header = "hq - command line HTML elements finder; version 1.0.0\n",
+    subcommands = AutoComplete.GenerateCompletion.class)
 public class HtmlCommand implements Runnable, QuarkusApplication {
 
   @Inject CommandLine.IFactory factory;
@@ -72,6 +75,12 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
       description = "Force pretty printing the output")
   boolean prettyPrint;
 
+  @CommandLine.Option(
+      names = {"-s", "--sanitize"},
+      paramLabel = "<POLICY>",
+      description = "Sanitizes the html input according to the given policy")
+  Sanitize sanitize;
+
   @Override
   public void run() {
     try {
@@ -88,10 +97,21 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
   }
 
   private void processHtml(String html) throws IOException {
+    Elements elements;
     Document document = Jsoup.parse(html);
+
+    if (sanitize != null) {
+      document = this.sanitize(document);
+    }
+
     this.setPrettyPrint(document);
-    Elements elements = this.evaluateSelector(document);
+    elements = this.evaluateSelector(document);
+
     this.printResult(elements);
+  }
+
+  private Document sanitize(Document document) {
+    return new Cleaner(sanitize.safelist()).clean(document);
   }
 
   private void setPrettyPrint(Document document) {
