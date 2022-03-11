@@ -91,7 +91,7 @@ Chars (\u000D - carriage return for example) ...
 
 Sanitize the html according to the [specified policy](#html-sanitizing):
 ```
-curl -s https://ludovicianul.github.io/2021/07/16/unicode_language_version/ | ./hq html -s=BASIC -p
+ ➜ curl -s https://ludovicianul.github.io/2021/07/16/unicode_language_version/ | ./hq html -s=BASIC -p
 
 <html>
     <head></head>
@@ -108,4 +108,22 @@ curl -s https://ludovicianul.github.io/2021/07/16/unicode_language_version/ | ./
 ...
     </body>
 </html>
+```
+
+Get all `href` attributes from a given page:
+
+```shell
+ ➜ curl -s https://ludovicianul.github.io | hq "*" -a "href"
+http://gmpg.org/xfn/11
+https://ludovicianul.github.io/public/css/poole.css
+https://ludovicianul.github.io/public/css/syntax.css
+https://ludovicianul.github.io/public/css/hyde.css
+https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface
+https://ludovicianul.github.io/public/apple-touch-icon-144-precomposed.png
+https://ludovicianul.github.io/public/favicon.ico
+/atom.xml
+https://ludovicianul.github.io/
+https://ludovicianul.github.io/
+/about/
+...
 ```
