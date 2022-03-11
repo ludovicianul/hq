@@ -2,16 +2,6 @@ package io.github.ludovicianul;
 
 import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Cleaner;
@@ -22,13 +12,20 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import us.codecraft.xsoup.Xsoup;
 
+import javax.inject.Inject;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @QuarkusMain
 @Command(
     name = "hq",
     mixinStandardHelpOptions = true,
-    version = "hq 1.0.0",
+    version = "hq 1.0.1",
     usageHelpWidth = 100,
-    header = "hq - command line HTML elements finder; version 1.0.0\n",
+    header = "hq - command line HTML elements finder; version 1.0.1\n",
     subcommands = AutoComplete.GenerateCompletion.class)
 public class HtmlCommand implements Runnable, QuarkusApplication {
 
@@ -78,7 +75,7 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
   @CommandLine.Option(
       names = {"-s", "--sanitize"},
       paramLabel = "<POLICY>",
-      description = "Sanitizes the html input according to the given policy")
+      description = "Sanitize the html input according to the given policy")
   Sanitize sanitize;
 
   @Override
