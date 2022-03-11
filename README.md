@@ -51,11 +51,20 @@ source hq_autocomplete
 
 # HTML Sanitizing
 `hq` can sanitize html output. Supported modes are: `NONE, BASIC, SIMPLE_TEXT, BASIC_WITH_IMAGES, RELAXED`. 
-More details about what they do: [here](https://jsoup.org/apidocs/org/jsoup/safety/Safelist.html).
+
+This is how sanitization works: 
+
+| Policy | Details |
+| ------- | ------- | 
+| `NONE` | Allows only text nodes: all HTML will be stripped. |
+| `BASIC` | Allows a fuller range of text nodes: `a, b, blockquote, br, cite, code, dd, dl, dt, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul`, and appropriate attributes. Does not allow images.|
+| `SIMPLE_TEXT` | Allows only simple text formatting: `b, em, i, strong, u`. All other HTML (tags and attributes) will be removed.| 
+| `BASIC_WITH_IMAGES` | Allows the same text tags as `BASIC`, and also allows `img` tags, with appropriate attributes, with `src` pointing to `http` or `https`.
+| `RELAXES` | Allows a full range of text and structural body HTML: `a, b, blockquote, br, caption, cite, code, col, colgroup, dd, div, dl, dt, em, h1, h2, h3, h4, h5, h6, i, img, li, ol, p, pre, q, small, span, strike, strong, sub, sup, table, tbody, td, tfoot, th, thead, tr, u, ul`.|
 
 # Examples
 
-Get the div with id `mainLeaderboard`:
+Get the `div` with id `mainLeaderboard`:
 
 ```
 ➜ curl -s https://www.w3schools.com/cssref/css_selectors.asp | hq "#mainLeaderboard"
@@ -80,7 +89,7 @@ Chars (\u000D - carriage return for example) ...
 ...
 ```
 
-Sanitize the html according to the [specified policy](https://jsoup.org/apidocs/org/jsoup/safety/Safelist.html):
+Sanitize the html according to the [specified policy](#html-sanitizing):
 ```
 curl -s https://ludovicianul.github.io/2021/07/16/unicode_language_version/ | ./hq html -s=BASIC -p
 
