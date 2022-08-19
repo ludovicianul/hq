@@ -127,3 +127,8 @@ https://ludovicianul.github.io/
 /about/
 ...
 ```
+
+# Resources
+
+- [Universal selector in CSS](https://www.scaler.com/topics/universal-selector-in-css/)
+- [HTML elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)
