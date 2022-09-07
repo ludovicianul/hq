@@ -132,3 +132,5 @@ https://ludovicianul.github.io/
 
 - [Universal selector in CSS](https://www.scaler.com/topics/universal-selector-in-css/)
 - [HTML elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)
+- [HTML Cheat Sheet](https://www.interviewbit.com/html-cheat-sheet/)
+- [CSS Cheat Sheet](https://www.interviewbit.com/css-cheat-sheet/)
