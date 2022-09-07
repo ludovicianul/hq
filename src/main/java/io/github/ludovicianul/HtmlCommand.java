@@ -26,9 +26,9 @@ import us.codecraft.xsoup.Xsoup;
 @Command(
     name = "hq",
     mixinStandardHelpOptions = true,
-    version = "hq 1.0.2",
+    version = "hq 1.2.0",
     usageHelpWidth = 100,
-    header = "hq - command line HTML elements finder and sanitizer; version 1.0.2\n",
+    header = "hq - command line HTML elements finder and sanitizer; version 1.2.0\n",
     subcommands = AutoComplete.GenerateCompletion.class)
 public class HtmlCommand implements Runnable, QuarkusApplication {
 

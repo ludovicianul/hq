@@ -30,7 +30,7 @@ Commands:
 # Installation
 
 `hq` is compiled to native code using GraalVM. Check
-the [release page](https://github.com/ludovicianul/hq/releases/tag/hq-1.0.2) for binaries (Linux,
+the [release page](https://github.com/ludovicianul/hq/releases/) for binaries (Linux,
 MacOS, uberjar).
 
 After download, you can make `hq` globally available:
