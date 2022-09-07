@@ -2,6 +2,16 @@ package io.github.ludovicianul;
 
 import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Cleaner;
@@ -12,24 +22,18 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import us.codecraft.xsoup.Xsoup;
 
-import javax.inject.Inject;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @QuarkusMain
 @Command(
     name = "hq",
     mixinStandardHelpOptions = true,
-    version = "hq 1.0.1",
+    version = "hq 1.0.2",
     usageHelpWidth = 100,
-    header = "hq - command line HTML elements finder; version 1.0.1\n",
+    header = "hq - command line HTML elements finder and sanitizer; version 1.0.2\n",
     subcommands = AutoComplete.GenerateCompletion.class)
 public class HtmlCommand implements Runnable, QuarkusApplication {
 
-  @Inject CommandLine.IFactory factory;
+  @Inject
+  CommandLine.IFactory factory;
 
   @Parameters(
       index = "0",
@@ -78,6 +82,12 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
       description = "Sanitize the html input according to the given policy")
   Sanitize sanitize;
 
+  @CommandLine.Option(
+      names = {"-r", "--remove"},
+      paramLabel = "<SELECTOR>",
+      description = "Remove nodes matching given selector")
+  String remove;
+
   @Override
   public void run() {
     try {
@@ -103,8 +113,15 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
 
     this.setPrettyPrint(document);
     elements = this.evaluateSelector(document);
+    this.removeIfNeeded(elements);
 
     this.printResult(elements);
+  }
+
+  private void removeIfNeeded(Elements elements) {
+    if (remove != null) {
+      elements.select(remove).remove();
+    }
   }
 
   private Document sanitize(Document document) {
