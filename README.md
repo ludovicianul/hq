@@ -29,6 +29,15 @@ Commands:
 
 # Installation
 
+## Homebrew
+
+```
+> brew tap ludovicianul/tap
+> brew install hq
+```
+
+## Manual
+
 `hq` is compiled to native code using GraalVM. Check
 the [release page](https://github.com/ludovicianul/hq/releases/) for binaries (Linux,
 MacOS, uberjar).
