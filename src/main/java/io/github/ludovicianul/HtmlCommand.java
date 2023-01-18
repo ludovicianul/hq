@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.select.Elements;
 import picocli.AutoComplete;
@@ -24,68 +25,68 @@ import us.codecraft.xsoup.Xsoup;
 
 @QuarkusMain
 @Command(
-    name = "hq",
-    mixinStandardHelpOptions = true,
-    version = "hq 1.2.0",
-    usageHelpWidth = 100,
-    header = "hq - command line HTML elements finder and sanitizer; version 1.2.0\n",
-    subcommands = AutoComplete.GenerateCompletion.class)
+  name = "hq",
+  mixinStandardHelpOptions = true,
+  version = "hq 1.2.0",
+  usageHelpWidth = 100,
+  header = "hq - command line HTML and XML elements finder and sanitizer; version 1.2.0\n",
+  subcommands = AutoComplete.GenerateCompletion.class)
 public class HtmlCommand implements Runnable, QuarkusApplication {
 
   @Inject
   CommandLine.IFactory factory;
 
   @Parameters(
-      index = "0",
-      paramLabel = "<selector>",
-      defaultValue = "empty",
-      description = "The CSS selector")
+    index = "0",
+    paramLabel = "<selector>",
+    defaultValue = "*",
+    description = "The CSS selector")
   String selector;
 
   @CommandLine.Option(
-      names = {"-a", "--attribute"},
-      paramLabel = "<attribute>",
-      description = "Return only this attribute from the selected HTML elements")
+    names = {"-a", "--attribute"},
+    paramLabel = "<attribute>",
+    description = "Return only this attribute from the selected HTML elements")
   String attribute;
 
   @CommandLine.Option(
-      names = {"-f", "--file"},
-      paramLabel = "<FILE>",
-      description = "The HTML input file. If not supplied it will default to stdin")
+    names = {"-f", "--file"},
+    paramLabel = "<FILE>",
+    description = "The HTML input file. If not supplied it will default to stdin")
   String file;
 
   @CommandLine.Option(
-      names = {"-o", "--output"},
-      paramLabel = "<FILE>",
-      description = "The output file. If not supplied it will default to stdout")
+    names = {"-o", "--output"},
+    paramLabel = "<FILE>",
+    description = "The output file. If not supplied it will default to stdout")
   String output;
 
   @CommandLine.Option(
-      names = {"-x", "--xpath"},
-      paramLabel = "<XPATH>",
-      description = "Supply an XPath selector instead of CSS")
+    names = {"-x", "--xpath"},
+    paramLabel = "<XPATH>",
+    description = "Supply an XPath selector instead of CSS")
   String xpath;
 
   @CommandLine.Option(
-      names = {"-t", "--text"},
-      description = "Display only the inner text of the selected HTML top element")
+    names = {"-t", "--text"},
+    description = "Display only the inner text of the selected HTML top element")
   boolean text;
 
   @CommandLine.Option(
-      names = {"-p", "--pretty"},
-      description = "Force pretty printing the output")
+    names = {"-p", "--pretty"},
+    description = "Force pretty printing the output")
   boolean prettyPrint;
 
   @CommandLine.Option(
-      names = {"-s", "--sanitize"},
-      paramLabel = "<POLICY>",
-      description = "Sanitize the html input according to the given policy")
+    names = {"-s", "--sanitize"},
+    paramLabel = "<POLICY>",
+    description = "Sanitize the html input according to the given policy")
   Sanitize sanitize;
 
   @CommandLine.Option(
-      names = {"-r", "--remove"},
-      paramLabel = "<SELECTOR>",
-      description = "Remove nodes matching given selector")
+    names = {"-r", "--remove"},
+    paramLabel = "<SELECTOR>",
+    description = "Remove nodes matching given selector")
   String remove;
 
   @Override
@@ -97,7 +98,9 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
       } else {
         html = this.parseFile();
       }
-      this.processHtml(html);
+      if (html != null && !html.trim().isBlank()) {
+        this.processHtml(html);
+      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -105,7 +108,8 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
 
   private void processHtml(String html) throws IOException {
     Elements elements;
-    Document document = Jsoup.parse(html);
+    Parser parser = isXML(html) ? Parser.xmlParser() : Parser.htmlParser();
+    Document document = Jsoup.parse(html, parser);
 
     if (sanitize != null) {
       document = this.sanitize(document);
@@ -116,6 +120,10 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
     this.removeIfNeeded(elements);
 
     this.printResult(elements);
+  }
+
+  private boolean isXML(String text) {
+    return text.startsWith("<?xml");
   }
 
   private void removeIfNeeded(Elements elements) {
@@ -131,6 +139,7 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
   private void setPrettyPrint(Document document) {
     if (prettyPrint) {
       document.outputSettings().indentAmount(4).outline(true);
+      document.outputSettings().prettyPrint(true);
     } else {
       document.outputSettings().prettyPrint(false);
     }
@@ -150,7 +159,7 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
     if (attribute != null) {
       List<String> elementsWithAttribute = elements.eachAttr(attribute);
       this.writeToOutput(
-          elementsWithAttribute.stream().collect(Collectors.joining(System.lineSeparator())));
+        elementsWithAttribute.stream().collect(Collectors.joining(System.lineSeparator())));
     } else if (text) {
       this.writeToOutput(elements.text());
     } else {
@@ -178,7 +187,10 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
   }
 
   private String parseSystemIn() throws IOException {
-    return this.parseInput(new InputStreamReader(System.in));
+    if (System.in.available() > 0) {
+      return this.parseInput(new InputStreamReader(System.in));
+    }
+    return null;
   }
 
   @Override
