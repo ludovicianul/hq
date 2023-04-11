@@ -89,6 +89,11 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
     description = "Remove nodes matching given selector")
   String remove;
 
+  @CommandLine.Option(
+          names = {"-D", "--debug"},
+          description = "Debug")
+  boolean debug;
+
   @Override
   public void run() {
     try {
@@ -97,6 +102,9 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
         html = this.parseSystemIn();
       } else {
         html = this.parseFile();
+      }
+      if (debug) {
+        System.out.println("Received file: \n" + html);
       }
       if (html != null && !html.trim().isBlank()) {
         this.processHtml(html);
@@ -187,10 +195,7 @@ public class HtmlCommand implements Runnable, QuarkusApplication {
   }
 
   private String parseSystemIn() throws IOException {
-    if (System.in.available() > 0) {
-      return this.parseInput(new InputStreamReader(System.in));
-    }
-    return null;
+    return this.parseInput(new InputStreamReader(System.in));
   }
 
   @Override
