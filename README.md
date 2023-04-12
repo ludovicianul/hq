@@ -77,11 +77,9 @@ This is how sanitization works:
 Get the `div` with id `mainLeaderboard`:
 
 ```
-➜ curl -s https://www.w3schools.com/cssref/css_selectors.asp | hq "#mainLeaderboard"
+➜ curl -s https://www.w3schools.com/cssref/css_selectors.php | hq "#main > p:nth-child(6)" -t
 
-<div id="mainLeaderboard" style="overflow:hidden;"> <!-- MainLeaderboard--> <!--<pre>main_leaderboard, all: [728,90][970,90][320,50][468,60]</pre>-->
- <div id="adngin-main_leaderboard-0"></div> <!-- adspace leaderboard -->
-</div>
+In CSS, selectors are patterns used to select the element(s) you want to style.
 
 ```
 
@@ -101,7 +99,7 @@ Chars (\u000D - carriage return for example) ...
 
 Sanitize the html according to the [specified policy](#html-sanitizing):
 ```
- ➜ curl -s https://ludovicianul.github.io/2021/07/16/unicode_language_version/ | ./hq html -s=BASIC -p
+ ➜ curl -s https://ludovicianul.github.io/2021/07/16/unicode_language_version/ | hq html -s=BASIC -p
 
 <html>
     <head></head>
