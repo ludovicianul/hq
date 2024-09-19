@@ -33,7 +33,7 @@ Commands:
 
 ```
 > brew tap ludovicianul/tap
-> brew install hq
+> brew install ludovicianul/tap/hq
 ```
 
 ## Manual
